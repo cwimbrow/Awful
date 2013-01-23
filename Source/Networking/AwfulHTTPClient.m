@@ -11,6 +11,7 @@
 #import "AwfulModels.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
+#import "AwfulStopwatch.h"
 #import "NSManagedObject+Awful.h"
 
 @interface AwfulHTTPClient ()
@@ -71,6 +72,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
+    AwfulStopwatch *stopwatch = [AwfulStopwatch startWithName:@"list threads"];
     NSDictionary *parameters = @{ @"forumid": forumID, @"perpage": @40, @"pagenumber": @(page) };
     NSURLRequest *request = [self requestWithMethod:@"GET"
                                                path:@"forumdisplay.php"
@@ -78,10 +80,14 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
+        [stopwatch recordCheckpoint:@"http request complete"];
         dispatch_async(self.parseQueue, ^{
+            [stopwatch recordCheckpoint:@"parsing started"];
             NSArray *infos = [ThreadParsedInfo threadsWithHTMLData:
                               ConvertFromWindows1252ToUTF8(data)];
+            [stopwatch recordCheckpoint:@"parsing complete"];
             dispatch_async(dispatch_get_main_queue(), ^{
+                [stopwatch recordCheckpoint:@"updating model started"];
                 NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:infos];
                 NSInteger stickyIndex = -(NSInteger)[threads count];
                 NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
@@ -90,6 +96,9 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                     thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
                 }
                 [[AwfulDataStack sharedDataStack] save];
+                [stopwatch recordCheckpoint:@"updating model complete"];
+                [stopwatch presentSummary];
+                NSLog(@"%@", [stopwatch summary]);
                 if (callback) callback(nil, threads);
             });
         });
@@ -103,6 +112,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
+    AwfulStopwatch *stopwatch = [AwfulStopwatch startWithName:@"list bookmarked threads"];
     NSDictionary *parameters = @{ @"action": @"view", @"perpage": @40, @"pagenumber": @(page) };
     NSURLRequest *request = [self requestWithMethod:@"GET"
                                                path:@"bookmarkthreads.php"
@@ -110,11 +120,18 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id data)
     {
+        [stopwatch recordCheckpoint:@"http request complete"];
         dispatch_async(self.parseQueue, ^{
+            [stopwatch recordCheckpoint:@"parsing started"];
             NSArray *threadInfos = [ThreadParsedInfo threadsWithHTMLData:
                                     ConvertFromWindows1252ToUTF8(data)];
+            [stopwatch recordCheckpoint:@"parsing complete"];
             dispatch_async(dispatch_get_main_queue(), ^{
+                [stopwatch recordCheckpoint:@"updating model started"];
                 NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:threadInfos];
+                [stopwatch recordCheckpoint:@"updating model complete"];
+                [stopwatch presentSummary];
+                NSLog(@"%@", [stopwatch summary]);
                 if (callback) callback(nil, threads);
             });
         });
@@ -132,6 +149,7 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                                                    NSUInteger firstUnreadPost,
                                                    NSString *advertisementHTML))callback
 {
+    AwfulStopwatch *stopwatch = [AwfulStopwatch startWithName:@"list posts"];
     NSMutableDictionary *parameters = [@{ @"threadid": threadID } mutableCopy];
     parameters[@"perpage"] = @40;
     if (page == AwfulPageNextUnread) parameters[@"goto"] = @"newpost";
@@ -143,10 +161,14 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id op, id data)
     {
+        [stopwatch recordCheckpoint:@"http request complete"];
         dispatch_async(self.parseQueue, ^{
+            [stopwatch recordCheckpoint:@"parsing started"];
             PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:
                                     ConvertFromWindows1252ToUTF8(data)];
+            [stopwatch recordCheckpoint:@"parsing complete"];
             dispatch_async(dispatch_get_main_queue(), ^{
+                [stopwatch recordCheckpoint:@"updating model started"];
                 NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:info];
                 if (callback) {
                     NSInteger firstUnreadPost = NSNotFound;
@@ -157,6 +179,9 @@ static NSData *ConvertFromWindows1252ToUTF8(NSData *windows1252)
                             if (firstUnreadPost < 0) firstUnreadPost = NSNotFound;
                         }
                     }
+                    [stopwatch recordCheckpoint:@"updating model complete"];
+                    [stopwatch presentSummary];
+                    NSLog(@"%@", [stopwatch summary]);
                     callback(nil, posts, firstUnreadPost, info.advertisementHTML);
                 }
             });

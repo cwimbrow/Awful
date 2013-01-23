@@ -110,6 +110,7 @@
 		1C74880716A99BC30068B8A3 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C7487FF16A99BC30068B8A3 /* Icon.png */; };
 		1C74880816A99BC30068B8A3 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C74880016A99BC30068B8A3 /* Icon@2x.png */; };
 		1C74880A16AC4B710068B8A3 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */; };
+		1C74882616B098D50068B8A3 /* AwfulStopwatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C74882516B098D50068B8A3 /* AwfulStopwatch.m */; };
 		1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */; };
 		1C8BE4FA169115020022B331 /* profile-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE4F9169115020022B331 /* profile-view.css */; };
 		1C8BE51B16917FB60022B331 /* posts-view-25.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8BE51A16917FB60022B331 /* posts-view-25.css */; };
@@ -949,6 +950,8 @@
 		1C7487FF16A99BC30068B8A3 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		1C74880016A99BC30068B8A3 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		1C74882416B098D50068B8A3 /* AwfulStopwatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulStopwatch.h; sourceTree = "<group>"; };
+		1C74882516B098D50068B8A3 /* AwfulStopwatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulStopwatch.m; sourceTree = "<group>"; };
 		1C83DB52161FF48600E53CFA /* ImgurHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurHTTPClient.h; sourceTree = "<group>"; };
 		1C83DB53161FF48600E53CFA /* ImgurHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurHTTPClient.m; sourceTree = "<group>"; };
 		1C8BE4F9169115020022B331 /* profile-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "profile-view.css"; sourceTree = "<group>"; };
@@ -1860,6 +1863,7 @@
 				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
 				1CDD51951542949600326C7B /* Settings and Theming */,
 				1CC780471612DA8D002AF958 /* Threads */,
+				1C74882216B098C10068B8A3 /* Timing */,
 				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
 				1C6ED634169103FE0015CDD5 /* Users */,
 			);
@@ -1924,6 +1928,15 @@
 				1C6ED639169104340015CDD5 /* profile-view.js */,
 			);
 			path = Users;
+			sourceTree = "<group>";
+		};
+		1C74882216B098C10068B8A3 /* Timing */ = {
+			isa = PBXGroup;
+			children = (
+				1C74882416B098D50068B8A3 /* AwfulStopwatch.h */,
+				1C74882516B098D50068B8A3 /* AwfulStopwatch.m */,
+			);
+			path = Timing;
 			sourceTree = "<group>";
 		};
 		1C83DB50161FF45200E53CFA /* Imgur API */ = {
@@ -3836,6 +3849,7 @@
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
+				1C74882616B098D50068B8A3 /* AwfulStopwatch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
